@@ -1,0 +1,28 @@
+import {terms,getCourse,getOffering} from './data.js';
+import {newPlan,bundle,addBundle,checkPlan,overlap,searchCourses,generate,applyProposal,calendar,clone} from './engine.js';
+const assert=(v,m='Unexpected outcome')=>{if(!v)throw Error(m);};
+const throws=(fn,code)=>{try{fn();}catch(e){assert(e.code===code,`Expected ${code}, got ${e.code}`);return;}throw Error('Expected rejection');};
+export function runChecks(){const result=[];const test=(name,fn)=>{const s=performance.now();try{fn();result.push({name,pass:true,ms:performance.now()-s});}catch(e){result.push({name,pass:false,error:e.message,ms:performance.now()-s});}};
+const p=()=>newPlan('fall26'),item=(id='CS61',option=0)=>({course:id,sections:getOffering('fall26',id).combos[option],units:getCourse(id).units});
+const m={days:[1],start:600,end:660,startDate:'2026-08-24',endDate:'2026-12-11',exceptions:[]};
+test('Course-code search normalizes spaces',()=>assert(searchCourses('fall26',{query:'cs 61'}).some(c=>c.id==='CS61')));
+test('Unknown term is rejected',()=>throws(()=>searchCourses('bad'), 'INVALID_TERM'));
+test('Complete lecture and lab add atomically',()=>assert(addBundle(p(),item(),0).items.length===1));
+test('Missing lab is rejected',()=>throws(()=>bundle(p(),'CS61',[item().sections[0]],4),'INVALID_SECTION_COMBINATION'));
+test('Wrong linked discussion is rejected',()=>throws(()=>bundle(p(),'CS61',[item().sections[0],item('CS61',1).sections[1]],4),'INVALID_SECTION_COMBINATION'));
+test('Units are counted once per course',()=>assert(checkPlan(addBundle(p(),item(),0)).units===4));
+test('Duplicate course rejected',()=>throws(()=>addBundle(addBundle(p(),item(),0),item(),1),'DUPLICATE'));
+test('Stale revision rejected',()=>throws(()=>addBundle(p(),item(),2),'STALE_REVISION'));
+test('Cancelled section rejected',()=>throws(()=>addBundle(p(),item('CS190'),0),'CANCELLED'));
+test('Variable units require a valid value',()=>throws(()=>bundle(p(),'CS199',getOffering('fall26','CS199').combos[0],5),'INVALID_UNITS'));
+test('Overlapping meeting detected',()=>assert(overlap(m,{...m,start:630,end:690})));
+test('Back-to-back meetings are allowed',()=>assert(!overlap(m,{...m,start:660,end:720})));
+test('Disjoint half-term dates are compatible',()=>assert(!overlap({...m,endDate:'2026-10-01'},{...m,startDate:'2026-10-12'})));
+test('Exception dates are excluded',()=>assert(!overlap({...m,startDate:'2026-09-07',endDate:'2026-09-07',exceptions:['2026-09-07']},m)));
+test('TBA never reported verified conflict-free',()=>{const x=addBundle(p(),{...item('CS199'),units:2},0);assert(!checkPlan(x).verified&&checkPlan(x).issues.some(i=>i.code==='UNKNOWN_TIME'));});
+test('Open-only filter checks required sections',()=>assert(!searchCourses('fall26',{query:'CS140',openOnly:true,days:[1,3,5]}).length));
+test('Impossible hard constraints remain unchanged',()=>{const x=p();x.constraints.earliest=1190;const before=JSON.stringify(x);assert(generate(x,['CS61'],['CS61']).options.length===0);assert(JSON.stringify(x)===before);});
+test('Locked course survives generated alternatives',()=>{const x=addBundle(p(),item(),0);x.items[0].locked=true;const r=generate(x,['CS61'],['CS61']);assert(r.options.length>0&&r.options[0].items[0].locked);});
+test('Proposal cannot overwrite a newer revision',()=>{const x=p(),r=generate(x,['CS61'],['CS61']);x.revision++;throws(()=>applyProposal(x,r.options[0]),'STALE_REVISION');});
+test('Calendar preserves timezone and teaching dates',()=>{const text=calendar(addBundle(p(),item(),0));assert(text.includes('TZID:America/Los_Angeles')&&text.includes('BEGIN:VTIMEZONE')&&!text.includes('DTSTART;TZID=America/Los_Angeles:20260907'));});
+return result;}
