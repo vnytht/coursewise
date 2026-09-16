@@ -23,7 +23,13 @@ Open http://127.0.0.1:5173. The site uses device-local browser storage; it has n
 - Weekly calendar, mobile agenda, print, timezone-aware ICS download.
 - WebMCP lab: native registration status, real invocation log, 20 runnable deterministic checks.
 
-## WebMCP
+## Try the MVP in a normal browser
+
+Select **Try planning demo**, then **Find sample options**. The preset asks for three CS courses totaling 12 units, protects Tuesday 9 AM–noon for work, and ranks feasible combinations by fewer class days. Review the rules, weekly gaps, and exact sections before optionally saving a separate demo plan. Existing plans and the shortlist are preserved; Undo reverses the save. The three-plans-per-term limit still applies.
+
+This is an explicitly labeled deterministic walkthrough, not a live AI chat or fabricated agent trace. It works without WebMCP support. Live browser-agent interactions remain available through the nine native tools. Results explain constraints and trade-offs; empty results suggest adjustments without silently relaxing user preferences. Fictional data, unverified eligibility, and lack of real enrollment are disclosed in the interface.
+
+## Native agent integration
 
 The adapter in `dist/app.js` feature-detects `document.modelContext`. Unsupported browsers retain the normal interface. Native tools are registered once and unregistered with an AbortSignal. No polyfill or simulated registration is used.
 
@@ -47,6 +53,8 @@ Example agent prompt: “Search CS courses in fall26. Inspect CS61, CS100, and C
 No student usability study, statistical model comparison, full accessibility audit, or independent calendar-app import has been completed. The lab does not claim those results. ICS behavior is covered by deterministic timezone/date checks. Browser availability varies; the hosted site must be opened in a WebMCP-capable context for native agent use.
 
 ## Structure
+
+MVP polish verified September 16, 2026: 23/23 Node checks pass, including three new demo/isolation/failure checks. Browser walkthrough generation, separate-plan saving, and Undo were exercised successfully. This is functional verification, not a user study.
 
 - `dist/data.js`: fictional catalog and terms.
 - `dist/engine.js`: shared scheduling, validation, search, generation, export.
