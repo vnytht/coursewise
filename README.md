@@ -1,69 +1,52 @@
 # CourseWise
 
-Agent-assisted course planning, with the student in control.
+### Find the right courses. Build a semester that works.
 
-CourseWise helps students discover courses, compare linked sections, and build a semester around their constraints. A browser agent can propose a schedule through **nine native WebMCP tools**; the student reviews the options before applying a proposal.
+CourseWise brings course discovery, selection, and scheduling into one workspace. Students can plan manually or use a browser agent to explore options—then review the proposed schedule before applying it.
 
-Built by [Vinay Thorat](https://github.com/vnytht). Independent prototype using fictional university data—not an enrollment system.
+Created by [Vinay Thorat](https://github.com/vnytht).
 
-## Product decisions
+## The problem
 
-- **Keep decisions visible.** Show exact sections and scheduling trade-offs before applying a proposal, with Undo afterward.
-- **Respect existing commitments.** Check date-aware conflicts, linked lectures and labs, busy time, locked courses, and unit constraints.
-- **Make assistance easy to try.** A guided, deterministic demo works without an agent-compatible browser and saves into a separate plan.
-- **Use one source of logic.** Manual controls and agent tools share the same scheduling engine.
+Choosing courses means balancing interests, linked lectures and labs, overlapping meetings, unit targets, and commitments outside class. A useful planning assistant needs to account for those constraints while leaving the student in control.
 
-## Preliminary usability findings
+## The experience
 
-The project owner's study summary reports **20 students** completing course discovery, skill-relevance assessment, selection, and schedule creation using manual and assisted workflows.
+- **Discover and shortlist.** Search courses and filter by department, level, units, requirements, availability, and meeting preferences.
+- **Build around commitments.** Protect busy time, lock selected courses, and compare compatible section combinations.
+- **Review before applying.** Inspect proposed schedules, exact sections, and trade-offs. Apply a proposal or adjust the constraints.
+- **Keep planning flexible.** Maintain multiple plans, undo changes, and export a schedule to a calendar.
 
-| Reported mean completion time | Manual | Assisted |
-| --- | --- | --- |
-| Workflow | 8 min 20 sec | 5 min 50 sec |
+## Product approach
 
-That is **30% lower average completion time**: `(500 − 350) / 500 × 100`.
+**Student control.** Multi-course proposals require student approval. Changes remain visible and reversible.
 
-These are owner-reported aggregate results from a small sample, not an independently verified or causal finding. Participant-level timings, task order, and completion rates are not documented. See [study details and limitations](STUDY.md).
+**Constraint-aware assistance.** The scheduler checks linked sections and date-aware conflicts, and rejects stale proposals rather than overwriting a newer plan.
 
-## Run locally
+**Consistent behavior.** Manual actions and nine native WebMCP tools use the same scheduling engine.
 
-Requires Node.js 18+ and Python 3. No dependencies or build step.
+**Accessible exploration.** A clearly labeled guided example lets visitors experience the planning workflow without a compatible browser agent.
 
-```sh
-git clone https://github.com/vnytht/coursewise.git
-cd coursewise
-npm test
-npm run dev
-```
+## Preliminary evaluation
 
-Open [localhost:5173](http://127.0.0.1:5173). Select **Try planning demo**, generate sample options, and review a 12-unit CS schedule that protects Tuesday morning for work. Saving creates a separate demo plan; Undo reverses it. Select **Project & study** for the in-app case study.
+The project owner's usability summary reports **20 students** finding courses, assessing relevance to their skill goals, selecting courses, and creating schedules.
 
-## Implementation
-
-Vanilla JavaScript, HTML, and CSS. The synthetic catalog contains 60 courses across six departments and two terms. Plans persist in browser-local storage; there are no accounts or application backend.
-
-| Module | Responsibility |
+| Reported average workflow time | |
 | --- | --- |
-| [engine.js](dist/engine.js) | Validation, conflict detection, bounded schedule generation, calendar export |
-| [app.js](dist/app.js) | Interface, local persistence, native WebMCP adapter |
-| [data.js](dist/data.js) | Fictional courses, sections, and terms |
-| [demo.js](dist/demo.js) | Guided planning example |
-| [tests](tests) | Scheduling and demo regression checks |
+| Manual planning | 8 min 20 sec |
+| Assisted planning | 5 min 50 sec |
+| Reduction | **30%** |
 
-The interface supports filtering, shortlists, linked-section selection, up to three named plans per term, weekly calendars, mobile agendas, and ICS export. Static hosts can serve `dist/` directly.
+This is a preliminary, owner-reported result from a small sample—not a causal or independently verified finding. [Study methodology and limitations →](STUDY.md)
 
-### Agent interface
+## Engineering
 
-The adapter feature-detects `document.modelContext`; ordinary planning remains available when it is unsupported. Live agent use requires a compatible browser and agent. The guided demo is not a live AI response.
+Built with JavaScript, HTML, and CSS. A shared scheduling engine powers the interface and the WebMCP integration, with validation for linked sections, plan revisions, and repeated mutation requests.
 
-- Discovery: `search_courses`, `get_course_details`, `get_plan_context`
-- Plan changes: `set_bookmark`, `add_course_bundle`, `remove_course_bundle`
-- Review: `check_plan`, `propose_schedule`, `prepare_plan_export`
+**23 automated checks** cover scheduling rules and guided-flow behavior. Plans are stored locally on the student's device.
 
-Mutation tools validate plan revisions and linked sections. Request IDs prevent repeated mutations within the current page session. Multi-course proposals require application through the visible student interface; individual mutation tools can directly update the plan.
+[Scheduling engine](dist/engine.js) · [WebMCP integration](dist/app.js) · [Tests](tests)
 
-## Validation and scope
+## Current scope
 
-The test suite contains **23 automated checks**, including linked-section validation, date-aware conflicts, stale proposals, and demo isolation. The in-app WebMCP lab exposes 20 deterministic engine checks. Automated checks are separate from usability evidence.
-
-This prototype does not verify prerequisites, degree eligibility, skill outcomes, or live seat availability. It has no university integration, cloud sync, or embedded AI chat. Implementation used AI assistance; product decisions and project ownership remain with Vinay Thorat.
+CourseWise is an independent planning prototype with a synthetic catalog of 60 courses across two terms. It is not connected to university enrollment systems and does not verify degree eligibility, prerequisites, skill outcomes, or live seats. Live agent assistance requires a compatible browser; the guided example is deterministic.
