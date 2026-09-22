@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CourseWise · Project &amp; usability study</title>
+  <meta name="description" content="CourseWise course-planning prototype: product decisions, nine WebMCP tools, and a preliminary owner-reported usability study with 20 students.">
+  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="case-study.css">
+</head>
+<body class="case-study">
+  <a class="skip" href="#study-main">Skip to content</a>
+  <header class="study-header"><a class="brand" href="index.html"><span class="brandmark" aria-hidden="true">▥</span><strong>coursewise</strong></a><a class="btn" href="index.html">Try the planner →</a></header>
+  <main id="study-main" class="study-main">
+    <p class="eyebrow">PRODUCT CASE STUDY · VINAY THORAT</p>
+    <h1>Course planning,<br>with the student in control.</h1>
+    <p class="study-lead">Find courses relevant to your goals, compare section combinations, and review a schedule before applying it. CourseWise brings manual planning and browser-agent assistance into the same workspace.</p>
+    <div class="study-tags"><span>Independent prototype</span><span>AI-assisted development</span><span>Fictional course catalog</span></div>
+
+    <section class="study-result" aria-labelledby="results-title">
+      <p class="eyebrow">PRELIMINARY USABILITY FINDING · OWNER-REPORTED</p>
+      <h2 id="results-title">30% lower average completion time</h2>
+      <p>The project owner reports that 20 students used CourseWise to find courses, assess relevance to skills they wanted to develop, select courses, and create a schedule using manual and assisted workflows.</p>
+      <dl class="study-metrics"><div><dt>Student participants</dt><dd>20</dd></div><div><dt>Manual average</dt><dd>8m 20s</dd></div><div><dt>Assisted average</dt><dd>5m 50s</dd></div><div><dt>Average difference</dt><dd>2m 30s</dd></div></dl>
+      <p class="study-formula">(500 seconds − 350 seconds) ÷ 500 seconds × 100 = <strong>30% less time</strong></p>
+      <p class="study-note">Based on the owner's aggregate study summary, supplied September 21, 2026. Session dates, participant-level timings, completion rates, and task ordering are not available in this case study. These are preliminary findings from a small sample; they do not establish broader outcomes or a causal effect.</p>
+    </section>
+
+    <section class="study-section" aria-labelledby="problem-title"><h2 id="problem-title">The product question</h2><p>Can an agent help students move from a course shortlist to a usable schedule while keeping their constraints and choices visible? Course planning involves linked lectures and labs, unit targets, overlapping meetings, and personal commitments. The first release focuses on one semester at a time.</p><p>The student study tasks described by the owner covered course discovery, perceived relevance to skill goals, course selection, and schedule creation. The app does not independently verify skill development, prerequisites, or degree eligibility.</p></section>
+
+    <section class="study-section" aria-labelledby="decisions-title"><h2 id="decisions-title">Decisions you can inspect in the prototype</h2><div class="study-cards">
+      <article><h3>Review before applying</h3><p>Multi-course proposals show exact sections and trade-offs. The student chooses which proposal to apply; Undo can reverse the change.</p></article>
+      <article><h3>Respect the plan</h3><p>The scheduler checks linked sections and date-aware time conflicts, protects busy time and locked courses, and rejects stale proposals.</p></article>
+      <article><h3>Make the experience easy to try</h3><p>A labeled guided example generates real schedule options without requiring an agent-compatible browser. It saves into a separate plan.</p></article>
+    </div><p>These describe implemented choices. The available study summary does not identify which changes followed participant feedback.</p></section>
+
+    <section class="study-section" aria-labelledby="engineering-title"><h2 id="engineering-title">How it works</h2><p>The interface and nine native WebMCP tools share one scheduling engine. The synthetic catalog contains 60 courses across two terms. An external browser agent can search courses, inspect sections, read the active plan, and request proposals grounded in that catalog.</p><p>The prototype was built with AI assistance using JavaScript, HTML, and CSS. Plans are stored on the current device. The guided example is deterministic; live agent use requires a compatible browser and agent. There is no university enrollment integration.</p><div class="study-flow" aria-label="Planning sequence"><span>Find courses</span><span aria-hidden="true">→</span><span>Check constraints</span><span aria-hidden="true">→</span><span>Review proposals</span><span aria-hidden="true">→</span><span>Student applies</span></div></section>
+
+    <section class="study-section" aria-labelledby="evidence-title"><h2 id="evidence-title">Two kinds of evidence</h2><p><strong>Usability summary:</strong> 20 participants and the mean completion times above were reported by the project owner. The 30% result describes time for the reported workflow. No separate pass rate for conflict-free schedules was supplied.</p><p><strong>Functional verification:</strong> 23 automated checks passed in the recorded September 16 run. The guided flow, saving a separate plan, and Undo were also exercised in the browser. The WebMCP lab includes 20 of the deterministic checks; three additional demo checks run in the source suite.</p><p>Automated checks establish behavior for their test cases. They are not a measure of student satisfaction or agent success across arbitrary requests.</p></section>
+
+    <section class="study-section" aria-labelledby="next-title"><h2 id="next-title">What to measure next</h2><p>Record individual task times and completion quality, use equivalent tasks with balanced manual/assisted order, and track corrections and unintended changes. That would help distinguish workflow improvement from practice effects and show whether faster completion also preserves schedule quality.</p><a class="btn dark" href="index.html">Explore CourseWise →</a></section>
+  </main>
+  <footer><span>CourseWise · Project &amp; study</span><span>Sample university data · Planning only</span></footer>
+</body>
+</html>
